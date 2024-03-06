@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lawlink_client/utils/extensions.dart';
 import 'package:lawlink_client/widgets/custom_text_form_field.dart';
 import 'package:lawlink_client/widgets/home_scaffold.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -13,7 +14,9 @@ class Signup extends StatefulWidget {
 class _SignupState extends State<Signup> {
   final _formSignUpKey = GlobalKey<FormState>();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   String? firstName, lastName, email, password, cpassword;
+  final supabase = Supabase.instance.client;
 
   @override
   Widget build(BuildContext context) {
@@ -95,6 +98,7 @@ class _SignupState extends State<Signup> {
                           child: CustomTextFormField(
                             autofillHints: const [AutofillHints.email],
                             obscureText: false,
+                            controller: emailController,
                             hintText: 'Enter Email ID',
                             labelText: 'Email',
                             validator: (value) {
@@ -195,10 +199,34 @@ class _SignupState extends State<Signup> {
     ));
   }
 
-  onSignupSubmit() {
+  onSignupSubmit() async {
     if (_formSignUpKey.currentState!.validate()) {
       _formSignUpKey.currentState!.save();
-      print('$email $password $cpassword');
+      final data = await supabase.from('clients').select().eq('email', '$email');
+      if (data.isEmpty) {
+        try {
+          final response = await supabase.from('clients').insert({
+            'name': '$firstName $lastName',
+            'email': email,
+            'password': password
+          });
+          print('Insertion successful: $response');
+        } catch (e) {
+          print('Error inserting data: $e');
+        }
+      } else {
+        final snackBar = SnackBar(
+          content: const Text('email already exists.'),
+          action: SnackBarAction(
+              label: 'Close',
+              onPressed: (){
+                emailController.clear();
+              },
+          )
+        );
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
     } else {}
   }
 

@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:lawlink_client/pages/home.dart';
 import 'package:lawlink_client/pages/login.dart';
 import 'package:lawlink_client/pages/signup.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
+
+  await Supabase.initialize(
+    url: '${dotenv.env['SUPABASE_URL']}',
+    anonKey: '${dotenv.env['SUPABASE_ANONKEY']}',
+  );
+
   runApp(const MyApp());
 }
 
@@ -38,7 +48,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/':(context) => const Home(),
         '/login':(context) => const Login(),
-        '/signup':(context) => Signup(),
+        '/signup':(context) => const Signup(),
       },
 
       initialRoute: '/',
