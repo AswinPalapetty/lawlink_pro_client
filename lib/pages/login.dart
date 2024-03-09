@@ -142,21 +142,39 @@ class _LoginState extends State<Login> {
   onLoginSubmit() async {
     if (_formLoginKey.currentState!.validate()) {
       _formLoginKey.currentState!.save();
-      final data = await supabase
-          .from('clients')
-          .select()
-          .eq('email', '$email')
-          .eq('password', '$password');
-      if (data.isEmpty) {
-        const snackBar = SnackBar(
-          content: Text("user doesn't exist."),
+      // final data = await supabase
+      //     .from('clients')
+      //     .select()
+      //     .eq('email', '$email')
+      //     .eq('password', '$password');
+      // if (data.isEmpty) {
+      //   const snackBar = SnackBar(
+      //     content: Text("user doesn't exist."),
+      //   );
+      //   // ignore: use_build_context_synchronously
+      //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      // }
+      // else{
+      //   print(data);
+      //   // ignore: use_build_context_synchronously
+      //   Navigator.pushNamed(context, '/home');
+      // }
+
+      try {
+        final AuthResponse res = await supabase.auth.signInWithPassword(
+          email: '$email',
+          password: '$password',
         );
+        final Session? session = res.session;
+        final User? user = res.user;
         // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        Navigator.pushNamed(context, '/home');
+      } catch (e) {
+        print("Login Error ==== $e");
       }
-      else{
-        print(data);
-      }
-    } else {}
+
+    } else {
+
+    }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:lawlink_client/pages/home.dart';
+import 'package:lawlink_client/pages/client_home.dart';
+import 'package:lawlink_client/pages/main_home.dart';
 import 'package:lawlink_client/pages/login.dart';
 import 'package:lawlink_client/pages/signup.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -49,6 +50,7 @@ class MyApp extends StatelessWidget {
         '/':(context) => const Home(),
         '/login':(context) => const Login(),
         '/signup':(context) => const Signup(),
+        '/home':(context) => const ClientHome()
       },
 
       initialRoute: '/',

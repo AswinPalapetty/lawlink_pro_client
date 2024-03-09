@@ -3,6 +3,7 @@ import 'package:lawlink_client/utils/extensions.dart';
 import 'package:lawlink_client/widgets/custom_text_form_field.dart';
 import 'package:lawlink_client/widgets/home_scaffold.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:password_hash_plus/password_hash_plus.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -15,8 +16,10 @@ class _SignupState extends State<Signup> {
   final _formSignUpKey = GlobalKey<FormState>();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-  String? firstName, lastName, email, password, cpassword;
+  String? firstName, lastName, email, password, cpassword, phone;
   final supabase = Supabase.instance.client;
+  var generator = PBKDF2();
+  var salt = Salt.generateAsBase64String(10);
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +27,12 @@ class _SignupState extends State<Signup> {
         child: Column(
       children: [
         const Expanded(
-            flex: 1,
+            flex: 0,
             child: SizedBox(
               height: 10,
             )),
         Expanded(
-          flex: 7,
+          flex: 8,
           child: Container(
               decoration: const BoxDecoration(
                   color: Colors.white,
@@ -93,6 +96,24 @@ class _SignupState extends State<Signup> {
                           ),
                         ],
                       ),
+                      Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: CustomTextFormField(
+                            obscureText: false,
+                            hintText: 'Enter Phone Number',
+                            labelText: 'Phone',
+                            validator: (value) {
+                              if (!value!.isValidPhone) {
+                                return "Enter a valid Phone number.";
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              setState(() {
+                                phone = value;
+                              });
+                            },
+                          )),
                       Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: CustomTextFormField(
@@ -202,31 +223,54 @@ class _SignupState extends State<Signup> {
   onSignupSubmit() async {
     if (_formSignUpKey.currentState!.validate()) {
       _formSignUpKey.currentState!.save();
-      final data = await supabase.from('clients').select().eq('email', '$email');
-      if (data.isEmpty) {
+
+      try {
+        final AuthResponse res =
+            await supabase.auth.signUp(email: '$email', password: '$password');
+
         try {
-          final response = await supabase.from('clients').insert({
+          final userDetails = {
+            'user_id': res.user!.id,
             'name': '$firstName $lastName',
-            'email': email,
-            'password': password
-          });
-          print('Insertion successful: $response');
+            'phone': phone
+          };
+
+          final resp = await supabase.from('clients').upsert(userDetails);
+          
+          print('Insertion successful: $resp');
+
+          // ignore: use_build_context_synchronously
+          Navigator.pushNamed(context, '/home');
+
         } catch (e) {
-          print('Error inserting data: $e');
+          print('insertion error =======  $e');
         }
-      } else {
+
+      } catch (e) {
+        print('auth error =======  $e');
         final snackBar = SnackBar(
-          content: const Text('email already exists.'),
-          action: SnackBarAction(
+            content: const Text('email already exists.'),
+            action: SnackBarAction(
               label: 'Close',
-              onPressed: (){
+              onPressed: () {
                 emailController.clear();
               },
-          )
-        );
+            ));
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
+      // } else {
+      //   final snackBar = SnackBar(
+      //       content: const Text('email already exists.'),
+      //       action: SnackBarAction(
+      //         label: 'Close',
+      //         onPressed: () {
+      //           emailController.clear();
+      //         },
+      //       ));
+      //   // ignore: use_build_context_synchronously
+      //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      // }
     } else {}
   }
 

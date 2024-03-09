@@ -10,5 +10,10 @@ extension ExtString on String{
     return passwordRegExp.hasMatch(this);
   }
 
+  bool get isValidPhone{
+    final phoneRegExp = RegExp(r'^\d{10}$');
+    return phoneRegExp.hasMatch(this);
+  }
+
 
 }
