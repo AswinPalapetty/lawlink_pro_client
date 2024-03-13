@@ -27,7 +27,6 @@ class _ClientHomeScaffoldState extends State<ClientHomeScaffold> {
     setState(() {
       userData = data;
     });
-    print('name ========= ${userData['name']}');
   }
 
   Color getRandomColor() {
@@ -81,7 +80,7 @@ class _ClientHomeScaffoldState extends State<ClientHomeScaffold> {
             padding: const EdgeInsets.all(8.0),
             child: IconButton(
                 onPressed: () {},
-                icon: const Icon(Icons.sms_outlined),
+                icon: const Icon(Icons.chat_outlined),
                 iconSize: 30),
           ),
           Padding(
@@ -96,12 +95,12 @@ class _ClientHomeScaffoldState extends State<ClientHomeScaffold> {
 
       floatingActionButton: FloatingActionButton(
         onPressed: (){
-          Navigator.pushNamed(context, '/add');
+          Navigator.pushNamed(context, '/chatbot');
         },
-        backgroundColor: Colors.blue[400],
+        backgroundColor: const Color.fromARGB(255, 19, 94, 155),
         tooltip: "Talk to bot",
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-        child: const Icon(Icons.three_p, color: Colors.white,size: 26,)
+        child: const Icon(Icons.sms, color: Colors.white,size: 26,)
       ),
 
       

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:lawlink_client/pages/client_home.dart';
+import 'package:lawlink_client/pages/lawyers.dart';
 import 'package:lawlink_client/pages/main_home.dart';
 import 'package:lawlink_client/pages/login.dart';
 import 'package:lawlink_client/pages/signup.dart';
+import 'package:lawlink_client/widgets/chatbot.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
@@ -50,7 +52,9 @@ class MyApp extends StatelessWidget {
         '/':(context) => const Home(),
         '/login':(context) => const Login(),
         '/signup':(context) => const Signup(),
-        '/home':(context) => const ClientHome()
+        '/home':(context) => const ClientHome(),
+        '/chatbot':(context) => const ChatBot(),
+        '/lawyers':(context) => const Lawyers()
       },
 
       initialRoute: '/',
