@@ -5,6 +5,9 @@ import 'package:lawlink_client/pages/lawyers.dart';
 import 'package:lawlink_client/pages/main_home.dart';
 import 'package:lawlink_client/pages/login.dart';
 import 'package:lawlink_client/pages/signup.dart';
+import 'package:lawlink_client/pages/user_reviews.dart';
+import 'package:lawlink_client/pages/view_lawyer.dart';
+import 'package:lawlink_client/pages/write_review.dart';
 import 'package:lawlink_client/widgets/chatbot.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -54,7 +57,10 @@ class MyApp extends StatelessWidget {
         '/signup':(context) => const Signup(),
         '/home':(context) => const ClientHome(),
         '/chatbot':(context) => const ChatBot(),
-        '/lawyers':(context) => const Lawyers()
+        '/lawyers':(context) => const Lawyers(),
+        '/view_lawyer':(context) => const ViewLawyer(),
+        '/user_reviews':(context) => const UserReviews(),
+        '/write_review':(context) => const WriteReview()
       },
 
       initialRoute: '/',
