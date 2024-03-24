@@ -1,10 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:lawlink_client/widgets/overall_rating.dart';
-import 'package:lawlink_client/widgets/rating_progress_indicator.dart';
 import 'package:lawlink_client/widgets/star_rating.dart';
 import 'package:lawlink_client/widgets/user_review_card.dart';
 

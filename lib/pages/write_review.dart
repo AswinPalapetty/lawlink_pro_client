@@ -1,6 +1,3 @@
-import 'dart:ffi';
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
@@ -66,20 +63,17 @@ class _WriteReviewState extends State<WriteReview> {
                 ),
               ),
               ElevatedButton(
-                onPressed: () {
-                  // Handle submit button press
-                },
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                          10.0), // Adjust border radius as needed
-                    ),
-                  ),
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                      const Color.fromARGB(255, 19, 124, 210)), // Set purple background color
-                ),
-                child: const Text('Submit',style: TextStyle(color: Colors.white),),
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 3, 37, 65),
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20))),
+                    padding: const EdgeInsets.symmetric(vertical: 15.0)),
+                child: const Text('Submit',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold)),
               )
             ],
           ),

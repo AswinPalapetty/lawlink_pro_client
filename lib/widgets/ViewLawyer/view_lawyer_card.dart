@@ -7,7 +7,7 @@ class ViewLawyerCard extends StatelessWidget {
     required this.amount,
     required this.lawyerServiceInfo,
     required this.buttonText,
-    this.onPressed,
+    this.onPressed, required this.icon,
   });
 
   final String lawyerService;
@@ -15,6 +15,7 @@ class ViewLawyerCard extends StatelessWidget {
   final String lawyerServiceInfo;
   final String buttonText;
   final void Function()? onPressed;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +77,7 @@ class ViewLawyerCard extends StatelessWidget {
                           onPressed: onPressed,
                           child: Row(
                             children: [
-                              const Icon(Icons.calendar_month),
+                              Icon(icon),
                               Text(buttonText,
                                   style: const TextStyle(
                                       color: Colors.black, fontSize: 15))
