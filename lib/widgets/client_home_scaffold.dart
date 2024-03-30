@@ -1,7 +1,7 @@
 import 'dart:math';
-
-import 'package:flutter/material.dart';
 import 'package:lawlink_client/utils/session.dart';
+import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ClientHomeScaffold extends StatefulWidget {
   const ClientHomeScaffold({super.key, this.child});
@@ -15,6 +15,7 @@ class ClientHomeScaffold extends StatefulWidget {
 
 class _ClientHomeScaffoldState extends State<ClientHomeScaffold> {
   Map<String, String> userData = {};
+  final supabase = Supabase.instance.client;
 
   @override
   void initState() {
@@ -27,6 +28,10 @@ class _ClientHomeScaffoldState extends State<ClientHomeScaffold> {
     setState(() {
       userData = data;
     });
+  }
+
+  void removeUserData() async {
+    await SessionManagement.clearUserData();
   }
 
   Color getRandomColor() {
@@ -77,17 +82,29 @@ class _ClientHomeScaffoldState extends State<ClientHomeScaffold> {
 
         actions: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(left: 5.0,top: 3),
             child: IconButton(
                 onPressed: () {},
                 icon: const Icon(Icons.chat_outlined),
                 iconSize: 30),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(left: 5.0,top: 3),
             child: IconButton(
                 onPressed: () {},
                 icon: const Icon(Icons.notifications_none_outlined),
+                iconSize: 30),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 5.0,right: 4,top: 3),
+            child: IconButton(
+                onPressed: () {
+                  supabase.auth.signOut();
+                  removeUserData();
+                  Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+;
+                },
+                icon: const Icon(Icons.logout),
                 iconSize: 30),
           )
         ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lawlink_client/utils/extensions.dart';
+import 'package:lawlink_client/utils/session.dart';
 import 'package:lawlink_client/widgets/custom_text_form_field.dart';
 import 'package:lawlink_client/widgets/home_scaffold.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -236,16 +237,33 @@ class _SignupState extends State<Signup> {
           };
 
           final resp = await supabase.from('clients').upsert(userDetails);
-          
+
+          await SessionManagement.storeUserData({
+            'userId': res.user!.id,
+            'email': email,
+            'name': '$firstName $lastName',
+            'phone': phone
+          });
+
           print('Insertion successful: $resp');
 
           // ignore: use_build_context_synchronously
-          Navigator.pushNamed(context, '/home');
-
+          Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
         } catch (e) {
           print('insertion error =======  $e');
+          await supabase.auth.admin.deleteUser(res.user!.id);
+          final snackBar = SnackBar(
+              content: const Text('Signup failed. please try again.'),
+              action: SnackBarAction(
+                label: 'Close',
+                onPressed: () {
+                  emailController.clear();
+                  passwordController.clear();
+                },
+              ));
+          // ignore: use_build_context_synchronously
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
-
       } catch (e) {
         print('auth error =======  $e');
         final snackBar = SnackBar(

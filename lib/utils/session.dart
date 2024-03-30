@@ -1,12 +1,12 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SessionManagement {
-  static Future<void> storeUserData(String name, String email, String userId, String  phone) async {
+  static Future<void> storeUserData(userData) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('name', name);
-    await prefs.setString('email', email);
-    await prefs.setString('userId', userId);
-    await prefs.setString('phone', phone);
+    await prefs.setString('name', userData['name']);
+    await prefs.setString('email', userData['email']);
+    await prefs.setString('userId', userData['userId']);
+    await prefs.setString('phone', userData['phone']);
   }
 
   static Future<Map<String, String>> getUserData() async {

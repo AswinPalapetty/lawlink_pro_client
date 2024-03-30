@@ -5,11 +5,12 @@ class ViewLawyerHeader extends StatelessWidget {
   const ViewLawyerHeader({
     super.key,
     required this.lawyerName,
-    required this.aboutLawyer,
+    required this.aboutLawyer, required this.child,
   });
 
   final String lawyerName;
   final String aboutLawyer;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +38,10 @@ class ViewLawyerHeader extends StatelessWidget {
         style: const TextStyle(
             fontSize: 16, color: Color.fromARGB(255, 57, 57, 57)),
       ),
-      leading: const CircleAvatar(
+      leading: CircleAvatar(
         maxRadius: 40,
         backgroundColor: Colors.black,
-        child: Icon(Icons.account_circle, color: Colors.white, size: 55),
+        child: child,
       ),
     );
   }

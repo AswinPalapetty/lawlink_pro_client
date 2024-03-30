@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lawlink_client/utils/extensions.dart';
+import 'package:lawlink_client/utils/session.dart';
 import 'package:lawlink_client/widgets/custom_text_form_field.dart';
 import 'package:lawlink_client/widgets/home_scaffold.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -142,39 +143,42 @@ class _LoginState extends State<Login> {
   onLoginSubmit() async {
     if (_formLoginKey.currentState!.validate()) {
       _formLoginKey.currentState!.save();
-      // final data = await supabase
-      //     .from('clients')
-      //     .select()
-      //     .eq('email', '$email')
-      //     .eq('password', '$password');
-      // if (data.isEmpty) {
-      //   const snackBar = SnackBar(
-      //     content: Text("user doesn't exist."),
-      //   );
-      //   // ignore: use_build_context_synchronously
-      //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      // }
-      // else{
-      //   print(data);
-      //   // ignore: use_build_context_synchronously
-      //   Navigator.pushNamed(context, '/home');
-      // }
-
       try {
         final AuthResponse res = await supabase.auth.signInWithPassword(
           email: '$email',
           password: '$password',
         );
-        final Session? session = res.session;
         final User? user = res.user;
+        PostgrestList? userData;
+        if (user != null) {
+          try {
+            userData =
+                await supabase.from('clients').select().eq('user_id', user.id);
+          } catch (e) {
+            print("error ====== $e");
+            // ignore: use_build_context_synchronously
+            _showSnackbar(context, 'Login failed. Please try again.');
+          }
+          final sessionUserData = {
+            'name': userData?[0]['name'] ?? '',
+            'phone': userData?[0]['phone'] ?? '',
+            'email': user.email,
+            'userId': user.id,
+          };
+          await SessionManagement.storeUserData(sessionUserData);
+        }
         // ignore: use_build_context_synchronously
-        Navigator.pushNamed(context, '/home');
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
       } catch (e) {
         print("Login Error ==== $e");
+        // ignore: use_build_context_synchronously
+        _showSnackbar(context, 'Incorrect email or password.');
       }
+    } else {}
+  }
 
-    } else {
-
-    }
+  void _showSnackbar(BuildContext context, String message) {
+    final snackBar = SnackBar(content: Text(message));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

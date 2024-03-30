@@ -9,6 +9,7 @@ import 'package:lawlink_client/pages/signup.dart';
 import 'package:lawlink_client/pages/user_reviews.dart';
 import 'package:lawlink_client/pages/view_lawyer.dart';
 import 'package:lawlink_client/pages/write_review.dart';
+import 'package:lawlink_client/utils/session.dart';
 import 'package:lawlink_client/widgets/chatbot.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -21,11 +22,21 @@ void main() async {
     anonKey: '${dotenv.env['SUPABASE_ANONKEY']}',
   );
 
-  runApp(const MyApp());
+  String initialRoute;
+  final data = await SessionManagement.getUserData();
+  if(data['name'] != ''){
+    initialRoute = '/';
+  }
+  else{
+    initialRoute = '/home';
+  }
+
+  runApp(MyApp(initialRoute: initialRoute));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final String initialRoute;
+  const MyApp({super.key,required this.initialRoute});
 
   // This widget is the root of your application.
   @override
@@ -33,21 +44,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'LawLink Pro',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
@@ -65,7 +61,7 @@ class MyApp extends StatelessWidget {
         '/hire_lawyer':(context) => const HireLawyerForm()
       },
 
-      initialRoute: '/',
+      initialRoute: initialRoute,
     );
   }
 }
