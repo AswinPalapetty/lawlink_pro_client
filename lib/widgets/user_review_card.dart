@@ -4,7 +4,14 @@ import 'package:lawlink_client/widgets/star_rating.dart';
 import 'package:lawlink_client/widgets/user_review_reply_card.dart';
 
 class UserReviewCard extends StatefulWidget {
-  const UserReviewCard({super.key});
+  const UserReviewCard(
+      {super.key,
+      required this.clientName,
+      required this.message, required this.date, required this.image, required this.rating, this.lawyerName, this.replyDate, this.replyMessage});
+  final String clientName, message, date;
+  final String image;
+  final double rating;
+  final String? lawyerName,replyDate, replyMessage;
 
   @override
   State<UserReviewCard> createState() => _UserReviewCardState();
@@ -18,39 +25,56 @@ class _UserReviewCardState extends State<UserReviewCard> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Row(
+            Row(
               children: [
                 CircleAvatar(
-                    backgroundImage: AssetImage('assets/images/user.jpg')),
-                SizedBox(width: 5),
-                Text("Aswin")
+                  backgroundColor: Colors.black,
+                  radius: 20,
+                  backgroundImage: widget.image != ''
+                      ? AssetImage(widget.image)
+                      : null,
+                  child: widget.image != ''
+                      ? null
+                      : const Icon(Icons.account_circle,
+                          color: Colors.white, size: 40),
+                ),
+                const SizedBox(width: 5),
+                Text(widget.clientName)
               ],
             ),
-            IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
+            IconButton(onPressed: () {
+              print("${widget.replyDate} ${widget.replyMessage}");
+            }, icon: const Icon(Icons.more_vert)),
           ],
         ),
         const SizedBox(height: 5),
-        const Row(
+        Row(
           children: [
-            StarRating(rating: 4),
-            SizedBox(width: 10),
-            Text('01-12-2024')
+            StarRating(rating: widget.rating),
+            const SizedBox(width: 10),
+            Text(widget.date)
           ],
         ),
         const SizedBox(height: 10),
-        const ExpandableText(
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
-          expandText: 'show more',
-          collapseText: 'show less',
-          maxLines: 3,
-          linkColor: Colors.blue,
-          style:
-              TextStyle(fontSize: 16, color: Color.fromARGB(255, 57, 57, 57)),
+        Align( // Align content to the left
+          alignment: Alignment.centerLeft,
+          child: ExpandableText(
+            widget.message,
+            expandText: 'show more',
+            collapseText: 'show less',
+            maxLines: 3,
+            linkColor: Colors.blue,
+            style: const TextStyle(
+                fontSize: 16, color: Color.fromARGB(255, 57, 57, 57)),
+          ),
         ),
-
         const SizedBox(height: 10),
-
-        const UserReviewReplyCard()
+        (widget.replyMessage != null && widget.replyDate != null) ? 
+        UserReviewReplyCard(
+          lawyerName: widget.lawyerName!,
+          replyDate: widget.replyDate!,
+          replyMessage: widget.replyMessage!,
+        ) : const SizedBox(height: 10)
       ],
     );
   }

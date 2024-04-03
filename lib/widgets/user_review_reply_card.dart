@@ -2,7 +2,9 @@ import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 
 class UserReviewReplyCard extends StatefulWidget {
-  const UserReviewReplyCard({super.key});
+  const UserReviewReplyCard({super.key, required this.lawyerName, required this.replyDate, required this.replyMessage});
+
+  final String lawyerName,replyDate,replyMessage;
 
   @override
   State<UserReviewReplyCard> createState() => _UserReviewReplyCardState();
@@ -27,31 +29,31 @@ class _UserReviewReplyCardState extends State<UserReviewReplyCard> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.0),
             ),
-            child: const Column(
+            child: Column(
               children: [
                 ListTile(
                   title: Row(
                     children: [
                       Text(
-                        "Advocate",
-                        style: TextStyle(fontSize: 18),
+                        'Adv. ${widget.lawyerName}',
+                        style: const TextStyle(fontSize: 18),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       Text(
-                        '01-12-2024',
+                        widget.replyDate,
                       )
                     ],
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.all(20.0),
                   child: ExpandableText(
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
+                    widget.replyMessage,
                     expandText: 'show more',
                     collapseText: 'show less',
                     maxLines: 3,
-                    linkColor: Color.fromARGB(255, 4, 90, 160),
-                    style: TextStyle(
+                    linkColor: const Color.fromARGB(255, 4, 90, 160),
+                    style: const TextStyle(
                         fontSize: 16, color: Color.fromARGB(255, 57, 57, 57)),
                   ),
                 ),

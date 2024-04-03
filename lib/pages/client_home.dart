@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lawlink_client/widgets/client_home_scaffold.dart';
 import 'package:lawlink_client/widgets/custom_info_card.dart';
+import 'package:lawlink_client/widgets/progress_indicator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ClientHome extends StatefulWidget {
@@ -32,14 +33,7 @@ class _ClientHomeState extends State<ClientHome> {
     return ClientHomeScaffold(
         child: SingleChildScrollView(
       child: isLoading
-          ? SizedBox(
-                height: MediaQuery.of(context).size.height * 0.5,
-                child: const Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 10, 63, 105)),
-                  ),
-                ),
-              )
+          ? const CustomProgressIndicator()
           : Column(
               children: [
                 const Padding(

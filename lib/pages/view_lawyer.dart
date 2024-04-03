@@ -4,6 +4,7 @@ import 'package:lawlink_client/widgets/ViewLawyer/view_lawyer_body.dart';
 import 'package:lawlink_client/widgets/ViewLawyer/view_lawyer_card.dart';
 import 'package:lawlink_client/widgets/ViewLawyer/view_lawyer_header.dart';
 import 'package:lawlink_client/widgets/client_home_scaffold.dart';
+import 'package:lawlink_client/widgets/progress_indicator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ViewLawyer extends StatefulWidget {
@@ -64,15 +65,7 @@ class _ViewLawyerState extends State<ViewLawyer> {
         child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: isLoading
-              ? SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.5,
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                          Color.fromARGB(255, 10, 63, 105)),
-                    ),
-                  ),
-                )
+              ? const CustomProgressIndicator()
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
