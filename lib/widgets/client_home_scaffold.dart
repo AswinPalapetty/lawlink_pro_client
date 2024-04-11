@@ -60,7 +60,7 @@ class _ClientHomeScaffoldState extends State<ClientHomeScaffold> {
               radius: 25,
               backgroundColor: getRandomColor(),
               child: Text(
-                '${userData['name']}'[0].toUpperCase(),
+                userData['name'] != null && userData['name']!.isNotEmpty ? '${userData['name']}'[0].toUpperCase() : '',
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -84,7 +84,12 @@ class _ClientHomeScaffoldState extends State<ClientHomeScaffold> {
           Padding(
             padding: const EdgeInsets.only(left: 5.0,top: 3),
             child: IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, '/chat_page', arguments: {
+                    'lawyerId' : '54464cf1-418f-4e3d-85e8-0bed36c98d5b',
+                    'lawyerName' : 'Aswin'
+                  });
+                },
                 icon: const Icon(Icons.chat_outlined),
                 iconSize: 30),
           ),
@@ -102,7 +107,6 @@ class _ClientHomeScaffoldState extends State<ClientHomeScaffold> {
                   supabase.auth.signOut();
                   removeUserData();
                   Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-;
                 },
                 icon: const Icon(Icons.logout),
                 iconSize: 30),

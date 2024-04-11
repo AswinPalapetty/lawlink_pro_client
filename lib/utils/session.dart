@@ -11,7 +11,7 @@ class SessionManagement {
 
   static Future<Map<String, String>> getUserData() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String name = prefs.getString('name') ?? 'Aswin';
+    final String name = prefs.getString('name') ?? '';
     final String email = prefs.getString('email') ?? '';
     final String userId = prefs.getString('userId') ?? '';
     final String phone = prefs.getString('phone') ?? '';
