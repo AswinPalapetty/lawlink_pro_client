@@ -131,6 +131,11 @@ class _WriteReviewState extends State<WriteReview> {
   void submitReview(double rating, String review) {
     final client = Supabase.instance.client;
     final userId = userData['userId'];
+    Map ratingCount = {5: 0, 4: 0, 3: 0, 2: 0, 1: 0};
+    double overallRatingvalue = 0;
+    int totalRatings = 0;
+    late PostgrestList userReviews;
+    late int reviewLength;
 
     if (userId == null ||
         userId.isEmpty ||
@@ -145,13 +150,39 @@ class _WriteReviewState extends State<WriteReview> {
       'lawyer_id': lawyerId,
       'rating': rating,
       'message': review,
-    }).then((response) {
+    }).then((response) async {
       showSnackBar("Successfully submitted your review.");
+
+      userReviews = await client
+          .from("user_reviews")
+          .select()
+          .eq("lawyer_id", lawyerId!);
+      reviewLength = userReviews.length;
+      for (int i = 0; i < userReviews.length; i++) {
+        double rating = double.parse(userReviews[i]['rating']);
+        if ([1, 2, 3, 4, 5].contains(rating)) {
+          ratingCount[rating]++;
+        }
+      }
+      ratingCount.forEach((rating, count) {
+        overallRatingvalue += (rating * count).toDouble();
+        totalRatings = (totalRatings + count).toInt();
+      });
+
+      if (totalRatings > 0) {
+        overallRatingvalue =
+            roundToTwoDecimalPlaces(overallRatingvalue /= totalRatings);
+      }
+      await client.from('lawyers').update({'rating':overallRatingvalue}).eq('user_id', lawyerId!);
       Navigator.pushNamed(context, "/user_reviews", arguments: lawyerId);
     }).catchError((error) {
       print("error ===== $error");
       showSnackBar("Error occured.");
     });
+  }
+
+  double roundToTwoDecimalPlaces(double value) {
+    return double.parse(value.toStringAsFixed(2));
   }
 
   void showSnackBar(String message) {
