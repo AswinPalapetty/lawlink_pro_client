@@ -174,6 +174,7 @@ class _WriteReviewState extends State<WriteReview> {
             roundToTwoDecimalPlaces(overallRatingvalue /= totalRatings);
       }
       await client.from('lawyers').update({'rating':overallRatingvalue}).eq('user_id', lawyerId!);
+      // ignore: use_build_context_synchronously
       Navigator.pushNamed(context, "/user_reviews", arguments: lawyerId);
     }).catchError((error) {
       print("error ===== $error");

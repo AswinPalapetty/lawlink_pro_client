@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:lawlink_client/pages/chat_history.dart';
 import 'package:lawlink_client/pages/chat_page.dart';
 import 'package:lawlink_client/pages/client_home.dart';
+import 'package:lawlink_client/pages/favourites.dart';
 import 'package:lawlink_client/pages/hire_lawyer_form.dart';
 import 'package:lawlink_client/pages/lawyers.dart';
 import 'package:lawlink_client/pages/main_home.dart';
@@ -62,7 +63,8 @@ class MyApp extends StatelessWidget {
         '/write_review':(context) => const WriteReview(),
         '/hire_lawyer':(context) => const HireLawyerForm(),
         '/chat_history':(context) => const ChatHistory(),
-        '/chat_page':(context) => const ChatPage()
+        '/chat_page':(context) => const ChatPage(),
+        '/favourites':(context) => const Favourites()
       },
 
       initialRoute: initialRoute,

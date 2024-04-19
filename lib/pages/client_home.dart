@@ -109,11 +109,8 @@ class _ClientHomeState extends State<ClientHome> {
                           padding: const EdgeInsets.symmetric(horizontal: 5),
                           child: GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                "/view_lawyer",
-                                arguments: user['user_id']
-                              );
+                              Navigator.pushNamed(context, "/view_lawyer",
+                                  arguments: user['user_id']);
                             },
                             child: Column(
                               children: [
@@ -122,7 +119,8 @@ class _ClientHomeState extends State<ClientHome> {
                                   radius: 30,
                                   backgroundImage: user['image'] != null &&
                                           user['image'] != ''
-                                      ? AssetImage(user['image'])
+                                      ? NetworkImage(user[
+                                          'image']) // Use NetworkImage to load image from URL
                                       : null,
                                   child: user['image'] != null &&
                                           user['image'] != ''

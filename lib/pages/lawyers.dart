@@ -13,7 +13,6 @@ class Lawyers extends StatefulWidget {
 }
 
 class _LawyersState extends State<Lawyers> {
-  Color? iconColor = Colors.black;
   IconData? icon = Icons.thumb_up_alt_outlined;
   List<int>? filterIndex;
   late PostgrestList lawyers;
@@ -26,7 +25,7 @@ class _LawyersState extends State<Lawyers> {
   }
 
   fetchLawyers() async {
-    final fetchedLawyers = await Supabase.instance.client.from('lawyers').select();
+    final fetchedLawyers = await Supabase.instance.client.from('lawyers').select().order('rating');
     setState(() {
       lawyers = fetchedLawyers;
       isLoading = false;
@@ -42,35 +41,35 @@ class _LawyersState extends State<Lawyers> {
     ];
 
     return ClientHomeScaffold(
-      child: Column(
-        children: [
-          DataFilters(
-            data: lawyers.map((lawyer) {
-              final education = lawyer['education'] is List
-                  ? lawyer['education'][0].toString()
-                  : lawyer['education'].toString();
-              final practiceAreas = lawyer['practice_areas'] is List
-                  ? lawyer['practice_areas'][0].toString()
-                  : lawyer['practice_areas'].toString();
-              return [education, practiceAreas, lawyer['name']];
-            }).toList(),
-            filterTitle: titles,
-            showAnimation: true,
-            recent_selected_data_index: (List<int>? index) {
-              setState(() {
-                filterIndex = index;
-              });
-            },
-            style: FilterStyle(
-              buttonColor: Colors.green,
-              buttonColorText: Colors.white,
-              filterBorderColor: Colors.grey,
-            ),
-          ),
-          Expanded(
-            child: isLoading
-                ? const CustomProgressIndicator() // Show loading indicator while fetching lawyers
-                : ListView.builder(
+      child: isLoading
+          ? const CustomProgressIndicator() // Show loading indicator while fetching lawyers
+          : Column(
+              children: [
+                DataFilters(
+                  data: lawyers.map((lawyer) {
+                    final education = lawyer['education'] is List
+                        ? lawyer['education'][0].toString()
+                        : lawyer['education'].toString();
+                    final practiceAreas = lawyer['practice_areas'] is List
+                        ? lawyer['practice_areas'][0].toString()
+                        : lawyer['practice_areas'].toString();
+                    return [education, practiceAreas, lawyer['name']];
+                  }).toList(),
+                  filterTitle: titles,
+                  showAnimation: true,
+                  recent_selected_data_index: (List<int>? index) {
+                    setState(() {
+                      filterIndex = index;
+                    });
+                  },
+                  style: FilterStyle(
+                    buttonColor: Colors.green,
+                    buttonColorText: Colors.white,
+                    filterBorderColor: Colors.grey,
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
                     itemCount: lawyers.length,
                     itemBuilder: (ctx, i) {
                       if (filterIndex == null || filterIndex!.contains(i)) {
@@ -82,8 +81,6 @@ class _LawyersState extends State<Lawyers> {
                           }
                         }
                         return LawyersCard(
-                          icon: icon,
-                          iconColor: iconColor,
                           lawyerId: lawyers[i]['user_id'] ?? '',
                           lawyerName: lawyers[i]['name'] ?? '',
                           description: lawyers[i]['description'] ?? '',
@@ -93,26 +90,15 @@ class _LawyersState extends State<Lawyers> {
                           rating: lawyers[i]['rating'] != null ? lawyers[i]['rating'].toString() : '0',
                           callCharge: lawyers[i]['call_charge'] ?? '0',
                           courtCharge: lawyers[i]['sitting_charge'] ?? '0',
-                          location: lawyers[i]['location'] ?? '',
-                          onTap: () {
-                            setState(() {
-                              iconColor = iconColor == Colors.black
-                                  ? const Color.fromARGB(255, 2, 130, 6)
-                                  : Colors.black;
-                              // ignore: unrelated_type_equality_checks
-                              icon = icon == Icons.thumb_up_alt_outlined
-                                  ? Icons.thumb_up_alt
-                                  : Icons.thumb_up_alt_outlined;
-                            });
-                          },
+                          location: lawyers[i]['location'] ?? ''
                         );
                       }
                       return const SizedBox();
                     },
                   ),
-          ),
-        ],
-      ),
+                ),
+              ],
+            ),
     );
   }
 }

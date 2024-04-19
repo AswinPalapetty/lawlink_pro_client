@@ -98,10 +98,7 @@ class _ClientHomeScaffoldState extends State<ClientHomeScaffold> {
             padding: const EdgeInsets.only(left: 5.0, top: 3),
             child: IconButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/chat_page', arguments: {
-                    'lawyerId': '54464cf1-418f-4e3d-85e8-0bed36c98d5b',
-                    'lawyerName': 'Aswin'
-                  });
+                  Navigator.pushNamed(context, '/chat_history');
                 },
                 icon: const Icon(Icons.chat_outlined),
                 iconSize: 30),
@@ -109,8 +106,10 @@ class _ClientHomeScaffoldState extends State<ClientHomeScaffold> {
           Padding(
             padding: const EdgeInsets.only(left: 5.0, top: 3),
             child: IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.notifications_none_outlined),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/favourites');
+                },
+                icon: const Icon(Icons.favorite),
                 iconSize: 30),
           ),
           Padding(

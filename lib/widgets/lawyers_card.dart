@@ -5,8 +5,6 @@ class LawyersCard extends StatelessWidget {
   const LawyersCard(
       {super.key,
       this.onTap,
-      this.icon,
-      this.iconColor,
       this.lawyerName,
       this.description,
       this.imageUrl,
@@ -20,8 +18,6 @@ class LawyersCard extends StatelessWidget {
       this.courtCharge});
 
   final void Function()? onTap;
-  final IconData? icon;
-  final Color? iconColor;
   final String? lawyerName;
   final String? description;
   final String? imageUrl;
@@ -138,17 +134,6 @@ class LawyersCard extends StatelessWidget {
                         "Experience : ${experience!}\n"
                         "Courts : ${courts!}\n"),
                   ),
-                  Positioned(
-                    top: 0,
-                    right: 4,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: GestureDetector(
-                        onTap: onTap,
-                        child: Icon(icon, color: iconColor),
-                      ),
-                    ),
-                  )
                 ]),
                 Padding(
                   padding: const EdgeInsets.only(top: 0, bottom: 20),

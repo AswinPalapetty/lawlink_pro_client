@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lawlink_client/utils/session.dart';
 import 'package:lawlink_client/widgets/ViewLawyer/practice_areas.dart';
 import 'package:lawlink_client/widgets/ViewLawyer/view_lawyer_body.dart';
 import 'package:lawlink_client/widgets/ViewLawyer/view_lawyer_card.dart';
@@ -21,11 +22,12 @@ class _ViewLawyerState extends State<ViewLawyer> {
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _hourController = TextEditingController();
 
-  late String userId;
+  late String lawyerId;
   late PostgrestList lawyerData, totalReviews;
   bool isLoading = true;
   late String aboutLawyer;
   late int reviewLength;
+  late Map<String, String> userData;
 
   @override
   void initState() {
@@ -41,21 +43,77 @@ class _ViewLawyerState extends State<ViewLawyer> {
   }
 
   fetchLawyer() async {
-    userId = ModalRoute.of(context)?.settings.arguments as String;
+    lawyerId = ModalRoute.of(context)?.settings.arguments as String;
+    userData = await SessionManagement.getUserData();
     lawyerData = await Supabase.instance.client
         .from('lawyers')
         .select()
-        .eq('user_id', userId);
+        .eq('user_id', lawyerId);
     aboutLawyer =
         "Registration No: ${lawyerData[0]['registration_no']}\n Education: ";
     for (var education in lawyerData[0]['education']) {
       aboutLawyer += "$education\n";
     }
-    totalReviews = await Supabase.instance.client.from("user_reviews").select().eq("lawyer_id",lawyerData[0]['user_id']);
+    totalReviews = await Supabase.instance.client
+        .from("user_reviews")
+        .select()
+        .eq("lawyer_id", lawyerData[0]['user_id']);
     reviewLength = totalReviews.length;
+    final result = await Supabase.instance.client
+        .from('favourites')
+        .select()
+        .eq('client_id', userData['userId']!);
+    if (result.isNotEmpty) {
+      final List<dynamic> lawyers = result[0]['lawyers'];
+      if (lawyers.contains(lawyerData[0]['user_id'])) {
+        setState(() {
+          iconColor = Colors.green;
+          icon = Icons.thumb_up_alt;
+        });
+      }
+    }
     setState(() {
       isLoading = false;
     });
+  }
+
+  addToFavourites() async {
+    final existingRow = await Supabase.instance.client
+        .from('favourites')
+        .select()
+        .eq('client_id', userData['userId']!);
+    if (existingRow.isEmpty) {
+      await Supabase.instance.client.from('favourites').insert({
+        'client_id': userData['userId']!,
+        'lawyers': [lawyerId]
+      });
+      setState(() {
+        iconColor = Colors.green;
+        icon = Icons.thumb_up_alt;
+      });
+    } else if (existingRow.isNotEmpty) {
+      final existingLawyers = List<String>.from(existingRow[0]['lawyers']);
+      if (!existingLawyers.contains(lawyerId)) {
+        existingLawyers.add(lawyerId);
+        await Supabase.instance.client.from('favourites').update({
+          'lawyers': existingLawyers,
+        }).eq('client_id', userData['userId']!);
+        setState(() {
+          iconColor = Colors.green;
+          icon = Icons.thumb_up_alt;
+        });
+      } else {
+        final existingLawyers = List<String>.from(existingRow[0]['lawyers']);
+        existingLawyers.remove(lawyerId);
+        await Supabase.instance.client.from('favourites').update({
+          'lawyers': existingLawyers,
+        }).eq('client_id', userData['userId']!);
+        setState(() {
+          iconColor = Colors.black;
+          icon = Icons.thumb_up_alt_outlined;
+        });
+      }
+    }
   }
 
   @override
@@ -77,7 +135,7 @@ class _ViewLawyerState extends State<ViewLawyer> {
                         radius: 30,
                         backgroundImage: lawyerData[0]['image'] != null &&
                                 lawyerData[0]['image'] != ''
-                            ? AssetImage(lawyerData[0]['image'])
+                            ? NetworkImage(lawyerData[0]['image'])
                             : null,
                         child: lawyerData[0]['image'] != null &&
                                 lawyerData[0]['image'] != ''
@@ -91,6 +149,7 @@ class _ViewLawyerState extends State<ViewLawyer> {
                       experience: "15",
                       location: lawyerData[0]['location'],
                       onTap: () {
+                        addToFavourites();
                         setState(() {
                           iconColor = iconColor == Colors.black
                               ? const Color.fromARGB(255, 2, 130, 6)
@@ -308,11 +367,8 @@ class _ViewLawyerState extends State<ViewLawyer> {
                             top: 10.0, left: 5, bottom: 30),
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(
-                                context,
-                                "/user_reviews",
-                                arguments: lawyerData[0]['user_id']
-                              );
+                            Navigator.pushNamed(context, "/user_reviews",
+                                arguments: lawyerData[0]['user_id']);
                           },
                           child: Row(
                             children: [
