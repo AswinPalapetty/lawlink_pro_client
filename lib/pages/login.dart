@@ -172,7 +172,7 @@ class _LoginState extends State<Login> {
       } catch (e) {
         print("Login Error ==== $e");
         // ignore: use_build_context_synchronously
-        _showSnackbar(context, 'Incorrect email or password.');
+        _showSnackbar(context, 'Incorrect email or password. $e');
       }
     } else {}
   }

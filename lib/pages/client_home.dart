@@ -57,22 +57,22 @@ class _ClientHomeState extends State<ClientHome> {
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: CustomInfoCard(
                         onTap: () {},
-                        infoText: "Select the amount of time you wish to talk.",
+                        infoText: "Select the date and time on which you wish to talk.",
                         icon: Icons.timer)),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: CustomInfoCard(
                     onTap: () {},
-                    icon: Icons.monetization_on,
-                    infoText: "Make payment.",
+                    icon: Icons.request_page,
+                    infoText: "Make request.",
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: CustomInfoCard(
                     onTap: () {},
-                    icon: Icons.schedule,
-                    infoText: "Lawyer will schedule the time slot.",
+                    icon: Icons.monetization_on,
+                    infoText: "Make payment if lawyer accept the request.",
                   ),
                 ),
                 Padding(
@@ -155,24 +155,24 @@ class _ClientHomeState extends State<ClientHome> {
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: CustomInfoCard(
                     onTap: () {},
-                    icon: Icons.schedule,
-                    infoText: "Lawyer will schedule the time slot.",
+                    icon: Icons.gavel_rounded,
+                    infoText: "Select the lawyer you wish to hire.",
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: CustomInfoCard(
                     onTap: () {},
-                    icon: Icons.schedule,
-                    infoText: "Lawyer will schedule the time slot.",
+                    icon: Icons.mail,
+                    infoText: "Give subject and message.",
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: CustomInfoCard(
                     onTap: () {},
-                    icon: Icons.schedule,
-                    infoText: "Lawyer will schedule the time slot.",
+                    icon: Icons.request_page,
+                    infoText: "Make request.",
                   ),
                 ),
                 const SizedBox(height: 25)

@@ -8,6 +8,7 @@ import 'package:lawlink_client/pages/hire_lawyer_form.dart';
 import 'package:lawlink_client/pages/lawyers.dart';
 import 'package:lawlink_client/pages/main_home.dart';
 import 'package:lawlink_client/pages/login.dart';
+import 'package:lawlink_client/pages/open_case.dart';
 import 'package:lawlink_client/pages/signup.dart';
 import 'package:lawlink_client/pages/user_reviews.dart';
 import 'package:lawlink_client/pages/view_lawyer.dart';
@@ -64,7 +65,8 @@ class MyApp extends StatelessWidget {
         '/hire_lawyer':(context) => const HireLawyerForm(),
         '/chat_history':(context) => const ChatHistory(),
         '/chat_page':(context) => const ChatPage(),
-        '/favourites':(context) => const Favourites()
+        '/favourites':(context) => const Favourites(),
+        '/view_case':(context) => const OpenCase()
       },
 
       initialRoute: initialRoute,

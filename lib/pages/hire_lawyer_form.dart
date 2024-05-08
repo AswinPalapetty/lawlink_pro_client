@@ -15,6 +15,8 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:lawlink_client/utils/session.dart';
 import 'package:lawlink_client/widgets/custom_text_form_field.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:password_hash_plus/password_hash_plus.dart';
@@ -27,13 +29,23 @@ class HireLawyerForm extends StatefulWidget {
 }
 
 class _HireLawyerFormState extends State<HireLawyerForm> {
-  final _formSignUpKey = GlobalKey<FormState>();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  String? subject, message;
-  final supabase = Supabase.instance.client;
+  final _hireLawyerFormKey = GlobalKey<FormState>();
+  late Map<String, String> userData;
+  String? subject, message, lawyerId;
   var generator = PBKDF2();
   var salt = Salt.generateAsBase64String(10);
+
+  @override
+  void initState() {
+    super.initState();
+    fetchDetails();
+  }
+
+  void fetchDetails() async {
+    userData = await SessionManagement.getUserData();
+    // ignore: use_build_context_synchronously
+    lawyerId = ModalRoute.of(context)?.settings.arguments as String;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +68,7 @@ class _HireLawyerFormState extends State<HireLawyerForm> {
                           topRight: Radius.circular(40))),
                   child: SingleChildScrollView(
                     child: Form(
-                      key: _formSignUpKey,
+                      key: _hireLawyerFormKey,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -77,7 +89,7 @@ class _HireLawyerFormState extends State<HireLawyerForm> {
                               padding: const EdgeInsets.all(10.0),
                               child: CustomTextFormField(
                                   autofillHints: null,
-                                  obscureText: true,
+                                  obscureText: false,
                                   hintText: 'Subject',
                                   labelText: 'Subject',
                                   validator: (value) {
@@ -91,7 +103,6 @@ class _HireLawyerFormState extends State<HireLawyerForm> {
                                       subject = value;
                                     });
                                   })),
-
                           Padding(
                             padding: const EdgeInsets.all(10),
                             child: TextFormField(
@@ -151,8 +162,44 @@ class _HireLawyerFormState extends State<HireLawyerForm> {
   }
 
   onFormSubmit() async {
-    if (_formSignUpKey.currentState!.validate()) {
-      _formSignUpKey.currentState!.save();
+    if (_hireLawyerFormKey.currentState!.validate()) {
+      _hireLawyerFormKey.currentState!.save();
+
+      try {
+        final details = {
+          'client_id': userData['userId'],
+          'lawyer_id': lawyerId,
+          'subject': subject,
+          'description': message
+        };
+        print(details);
+        final response = await Supabase.instance.client.from('lawyer_booking').upsert(details);
+        print(response);
+        final snackBar = SnackBar(
+            content: const Text(
+                'Case request has been sent to lawyer. Waiting for the approval.'),
+            action: SnackBarAction(
+              label: 'Close',
+              onPressed: () {},
+            ));
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        // ignore: use_build_context_synchronously
+        Navigator.pop(context);
+      } catch (e) {
+        print(error);
+        final snackBar = SnackBar(
+            content: const Text(
+                'An error occured.'),
+            action: SnackBarAction(
+              label: 'Close',
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ));
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
 
       // try {
       //   final AuthResponse res =
@@ -201,5 +248,4 @@ class _HireLawyerFormState extends State<HireLawyerForm> {
       // }
     } else {}
   }
-
 }

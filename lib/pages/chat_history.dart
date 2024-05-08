@@ -24,9 +24,16 @@ class _ChatHistoryState extends State<ChatHistory> {
   fetchChats() async {
     user = await SessionManagement.getUserData();
     final result = await Supabase.instance.client.from('message').select('user_from').eq('user_to', user['userId']!);
-    for(var lawyerId in result){
-      final lawyer = await Supabase.instance.client.from('lawyers').select().eq('user_id', lawyerId['user_from']).single();
+    Set<String> uniqueUserFrom = <String>{};
+    if (result.isNotEmpty) {
+      for (var lawyerId in result) {
+        uniqueUserFrom
+            .add(lawyerId['user_from']); // Add user_from value to the Set
+      }
+      for(var userFrom in uniqueUserFrom){
+      final lawyer = await Supabase.instance.client.from('lawyers').select().eq('user_id', userFrom).single();
       lawyers.add(lawyer);  
+    }
     }
     print(lawyers);
     // List<String> userIds = List<String>.from(result[0]['lawyers']);
@@ -54,7 +61,8 @@ class _ChatHistoryState extends State<ChatHistory> {
           ),
         ),
         body: isLoading ? const CustomProgressIndicator()
-          : ListView.builder(
+          : lawyers.isNotEmpty ?
+          ListView.builder(
               itemCount: lawyers.length,
               itemBuilder: (context, index) {
                 final data = lawyers[index];
@@ -68,7 +76,7 @@ class _ChatHistoryState extends State<ChatHistory> {
                   },
                 );
               },
-            ),
+            ) : const Center(child: Text("No chats found"))
     );
   }
 }
